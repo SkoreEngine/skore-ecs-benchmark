@@ -1,0 +1,1 @@
+# skore-ecs-benchmark
