@@ -2,17 +2,17 @@
 
 - entities per scenario: 100000
 - warm-up runs: 2
-- timed runs: 2
+- timed runs: 5
 - query/system iterations per timed run: 100
-- checksum: 18385282514810143344
+- checksum: 47369306390000
 
 | scenario | skore_avg(s) | flecs_avg(s) | skore/flecs | skore_ops/s | flecs_ops/s |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| create_entities | 0.0914173 | 0.00765726 | 11.9386x | 1.09389e+06 | 1.30595e+07 |
-| destroy_entities | 0.0169896 | 0.00221998 | 7.65304x | 5.88594e+06 | 4.50454e+07 |
-| add_component | 0.101859 | 0.00596927 | 17.0639x | 981748 | 1.67525e+07 |
-| remove_component | 0.0775937 | 0.00600247 | 12.927x | 1.28876e+06 | 1.66598e+07 |
-| iterate_position | 0.00723569 | 0.00708754 | 1.0209x | 1.38204e+09 | 1.41093e+09 |
-| iterate_position_velocity | 0.00845427 | 0.0102004 | 0.828815x | 1.18283e+09 | 9.80351e+08 |
-| system_update | 0.0084376 | 0.0082908 | 1.01771x | 1.18517e+09 | 1.20616e+09 |
-| deferred_spawn | 0.095231 | 0.0168071 | 5.66612x | 1.05008e+06 | 5.94987e+06 |
+| create_entities | 0.164452 | 0.0078132 | 21.048x | 608079 | 1.27988e+07 |
+| destroy_entities | 0.0173988 | 0.00181049 | 9.60996x | 5.74754e+06 | 5.52336e+07 |
+| add_component | 0.167365 | 0.00671589 | 24.9208x | 597495 | 1.489e+07 |
+| remove_component | 0.112912 | 0.00593189 | 19.0347x | 885646 | 1.6858e+07 |
+| iterate_position | 0.00689724 | 0.00608349 | 1.13376x | 1.44986e+09 | 1.64379e+09 |
+| iterate_position_velocity | 0.00960977 | 0.00679602 | 1.41403x | 1.04061e+09 | 1.47145e+09 |
+| system_update | 0.00737107 | 0.00670893 | 1.09869x | 1.35666e+09 | 1.49055e+09 |
+| deferred_spawn | 0.174152 | 0.0125477 | 13.8792x | 574212 | 7.96961e+06 |
