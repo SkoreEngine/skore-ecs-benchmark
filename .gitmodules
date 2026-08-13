@@ -1,4 +1,4 @@
 [submodule "thirdparty/skore"]
 	path = thirdparty/skore
 	url = https://github.com/SkoreEngine/Skore.git
-	branch = v2
+	branch = feature/refactor-big-one

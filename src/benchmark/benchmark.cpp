@@ -95,20 +95,23 @@ namespace {
 
 struct skore_backend_t {
 	sk_app_context_t* context = nullptr;
+	const sk_app_api_t* app_api = nullptr;
 	const sk_entities_api_t* ecs = nullptr;
 
 	bool init() {
-		context = sk_app_init(0, nullptr);
-		if (context == nullptr) {
+		const sk_app_boot_t boot = sk_app_init(0, nullptr);
+		context = boot.context;
+		app_api = boot.api;
+		if (context == nullptr || app_api == nullptr) {
 			std::cerr << "skore: sk_app_init failed\n";
 			return false;
 		}
-		const sk_app_api_t* app_api = sk_app_api();
 		ecs = static_cast<const sk_entities_api_t*>(app_api->get_api(context, kEntitiesApiId));
 		if (ecs == nullptr) {
 			std::cerr << "skore: sk_entities_api_t not registered (plugin not loaded?)\n";
-			sk_app_destroy(context);
+			sk_app_shutdown(context);
 			context = nullptr;
+			app_api = nullptr;
 			return false;
 		}
 		ecs->register_component(kPositionId, sizeof(position_t), alignof(position_t), "Position");
@@ -119,8 +122,9 @@ struct skore_backend_t {
 
 	void shutdown() {
 		if (context != nullptr) {
-			sk_app_destroy(context);
+			sk_app_shutdown(context);
 			context = nullptr;
+			app_api = nullptr;
 			ecs = nullptr;
 		}
 	}

@@ -39,9 +39,10 @@ struct benchmark_result {
 /**
  * Run the full Skore ECS benchmark suite.
  *
- * Bootstraps the Skore app context (which auto-loads the sk-entities plugin
- * from {app_folder}/plugins), obtains the sk_entities_api_t from the app
- * registry, then runs every scenario in @p config's fixed-size worlds.
+ * Bootstraps via sk_app_init (sk_app_boot_t: context + api table), which
+ * auto-loads the sk-entities plugin from {app_folder}/plugins, looks up
+ * sk_entities_api_t on the returned context, then runs every scenario in
+ * @p config's fixed-size worlds.
  * Results are collected in @p out_results (cleared on entry).
  *
  * @param config       Suite parameters (entity counts, warm-up, timed runs).
