@@ -2,8 +2,9 @@
 
 Benchmark harness for comparing ECS implementations (Skore ECS vs. Flecs) on the Skore Engine.
 
-> **Status: Skore + Flecs comparison wired in.** Skore (branch `v2`) is pinned as
-> a git submodule under `thirdparty/skore`; Flecs 4.1.6 is vendored under
+> **Status: Skore + Flecs comparison wired in.** Skore (branch
+> `feature/refactor-big-one`, foundation context APIs) is pinned as a git
+> submodule under `thirdparty/skore`; Flecs 4.1.6 is vendored under
 > `thirdparty/flecs`. The harness runs equivalent scenarios on both ECSs and
 > prints + saves a comparison.
 
@@ -16,7 +17,7 @@ Benchmark harness for comparing ECS implementations (Skore ECS vs. Flecs) on the
 ├── src/
 │   └── benchmark/                 # benchmark sources + entrypoint (main.cpp)
 ├── thirdparty/
-│   ├── skore/                     # Skore engine (git submodule, branch v2)
+│   ├── skore/                     # Skore engine (git submodule, foundation)
 │   └── flecs/                     # Flecs 4.1.6 (vendored single-file library)
 ├── results/
 │   └── comparison.md              # latest side-by-side comparison output
@@ -32,19 +33,21 @@ Benchmark harness for comparing ECS implementations (Skore ECS vs. Flecs) on the
 
 ## Dependencies
 
-Skore is pinned as a git submodule tracking branch `v2`. Clone/update it with:
+Skore is pinned as a git submodule tracking the foundation-context refactor
+(`feature/refactor-big-one`). Clone/update it with:
 
 ```sh
 git submodule update --init thirdparty/skore
 ```
 
-Its ECS (the `sk-entities` plugin and the `sk-core` engine library) is compiled
-and linked directly from the benchmark build. Skore sources are never modified
-by this project. The Skore build's clang-tidy gate and test host are disabled
-for benchmark builds; pass `-DSK_ENABLE_CLANG_TIDY=ON` or `-DBUILD_TESTING=ON`
-to override. Skore is added with `EXCLUDE_FROM_ALL`, so its own executables
-(`sk-player`, editor, tests) are not part of the default build — only the
-targets the benchmark depends on (`sk-core`, `sk-app`, `sk-entities`) are built.
+Its ECS (the `sk-entities` plugin and the `sk-foundation` engine library) is
+compiled and linked directly from the benchmark build. Skore sources are never
+modified by this project. The Skore build's clang-tidy gate and test host are
+disabled for benchmark builds; pass `-DSK_ENABLE_CLANG_TIDY=ON` or
+`-DBUILD_TESTING=ON` to override. Skore is added with `EXCLUDE_FROM_ALL`, so
+its own executables (`sk-player`, editor, tests) are not part of the default
+build — only the targets the benchmark depends on (`sk-foundation`,
+`sk-entities`) are built.
 
 Flecs 4.1.6 is vendored in-tree as the single-file amalgamation (`flecs.c` +
 `flecs.h`, MIT license, kept in `thirdparty/flecs/LICENSE`). It is built as a

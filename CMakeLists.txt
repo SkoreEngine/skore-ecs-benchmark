@@ -14,13 +14,13 @@ endif()
 option(SKORE_ECS_BENCH_ENABLE_SANITIZERS "Enable address/undefined behavior sanitizers" OFF)
 
 # ---------------------------------------------------------------------------
-# Skore (git submodule, branch v2)
+# Skore (git submodule, branch feature/refactor-big-one)
 #
-# Skore is pinned as a git submodule tracking branch v2:
+# Skore is pinned as a git submodule tracking the foundation-context refactor:
 #   git submodule update --init thirdparty/skore
-# Its CMake root is included here so the ECS targets (sk-core, sk-entities)
-# are available to link against. Skore sources are never modified by this
-# project.
+# Its CMake root is included here so the ECS targets (sk-foundation,
+# sk-entities) are available to link against. Skore sources are never
+# modified by this project.
 #
 # Skore's own build defaults are relaxed for the benchmark build: clang-tidy
 # is a lint gate we do not run here, and Skore's test host is not built inside
@@ -30,10 +30,20 @@ option(SKORE_ECS_BENCH_ENABLE_SANITIZERS "Enable address/undefined behavior sani
 # out of the default build. Their include paths resolve against the top-level
 # source dir, which is this benchmark when Skore is a subdirectory, so they
 # are not part of this project's build graph. Only targets the benchmark
-# depends on (sk-core, sk-entities) are built, plus anything built explicitly.
+# depends on (sk-foundation, sk-entities) are built, plus anything built
+# explicitly.
 # ---------------------------------------------------------------------------
 set(SK_ENABLE_CLANG_TIDY OFF CACHE BOOL "Disable Skore clang-tidy gate in benchmark builds")
 set(BUILD_TESTING OFF CACHE BOOL "Disable Skore tests in benchmark builds")
+# Skore plugin CMake uses ${CMAKE_SOURCE_DIR}/plugins (valid when Skore is
+# the top-level project). As a subdirectory that path is this repo root;
+# a symlink keeps -Werror=missing-include-dirs from failing the build.
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/plugins")
+	file(CREATE_LINK
+		"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/skore/plugins"
+		"${CMAKE_SOURCE_DIR}/plugins"
+		SYMBOLIC)
+endif()
 add_subdirectory(thirdparty/skore EXCLUDE_FROM_ALL)
 
 # Flecs 4.1.6 (vendored single-file library) for the comparison backend.
@@ -47,12 +57,10 @@ target_include_directories(skore_ecs_benchmark_core PUBLIC
 )
 target_compile_features(skore_ecs_benchmark_core PUBLIC cxx_std_20)
 
-# Skore engine core: types, allocators, containers, math, app/platform API
-# headers. Static link; also makes sk-core's public headers available.
-target_link_libraries(skore_ecs_benchmark_core PUBLIC sk-core)
-# sk-app implements the app registry / plugin bootstrap (sk_app_init) used by
-# the Skore backend. PUBLIC so the executable links it transitively.
-target_link_libraries(skore_ecs_benchmark_core PUBLIC sk-app)
+# Skore foundation: types, allocators, containers, and context bootstrap
+# (sk_app_init returns sk_app_boot_t). Static link; public headers come
+# from the merged foundation/ module (former core/ + app/).
+target_link_libraries(skore_ecs_benchmark_core PUBLIC sk-foundation)
 # Skore ECS public header (sk_entities_api_t).
 target_include_directories(skore_ecs_benchmark_core PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/skore/plugins/entities

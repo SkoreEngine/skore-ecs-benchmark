@@ -1,5 +1,8 @@
 # Build output
 build/
+# Configure-time symlink so Skore's CMAKE_SOURCE_DIR/plugins includes resolve
+# when Skore is built as a subdirectory.
+/plugins
 out/
 cmake-build-*/
 _cmake/
